@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}Cortex Framework — Authentication System{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-box { max-width: 420px; margin: 40px auto; background: rgba(20, 20, 35, 0.7); border: 1px solid rgba(79,70,229,0.3); border-radius: 16px; padding: 35px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+    .tabs { display: flex; justify-content: space-around; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; }
+    .tab { cursor: pointer; color: #6B7280; font-weight: bold; font-size: 16px; }
+    .tab.active { color: #00F2FE; text-shadow: 0 0 10px rgba(0,242,254,0.3); }
+    .input-group { margin-bottom: 20px; }
+    label { display: block; color: #A0AEC0; font-size: 13px; margin-bottom: 8px; }
+    input { width: 100%; padding: 12px; background: #0A0A14; border: 1px solid #3A3A55; border-radius: 8px; color: #FFF; outline: none; }
+    input:focus { border-color: #F355DA; }
+    .auth-btn { width: 100%; padding: 12px; background: linear-gradient(90deg, #F355DA, #6C63FF); border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
+    .error-msg { background: rgba(239,68,68,0.1); border: 1px solid #EF4444; color: #EF4444; padding: 10px; border-radius: 6px; font-size: 13px; text-align: center; margin-bottom: 20px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-box">
+    <div class="tabs">
+        <span class="tab active" id="loginTab" onclick="switchAuth('login')">SIGN IN</span>
+        <span class="tab" id="signupTab" onclick="switchAuth('signup')">CREATE ACCOUNT</span>
+    </div>
+    
+    {% if error %}<div class="error-msg">⚠️ {{ error }}</div>{% endif %}
+    
+    <form id="authForm" method="POST" action="/auth">
+        <input type="hidden" name="action" id="actionField" value="login">
+        
+        <div class="input-group" id="userGroup" style="display: none;">
+            <label>Choose Unique System Username</label>
+            <input type="text" name="username" placeholder="e.g., administrator_x">
+        </div>
+        
+        <div class="input-group">
+            <label>Account Electronic Mail (Email) / Identifier</label>
+            <input type="text" name="email" placeholder="name@university.edu" required>
+        </div>
+        
+        <div class="input-group">
+            <label>Security Passphrase Crypt Key</label>
+            <input type="password" name="password" placeholder="••••••••" required>
+        </div>
+        
+        <button type="submit" class="auth-btn" id="submitBtn">Authorize Terminal Access</button>
+    </form>
+</div>
+
+<script>
+    function switchAuth(type) {
+        document.getElementById('actionField').value = type;
+        if(type === 'login') {
+            document.getElementById('loginTab').className = "tab active";
+            document.getElementById('signupTab').className = "tab";
+            document.getElementById('userGroup').style.display = "none";
+            document.getElementById('submitBtn').innerText = "Authorize Terminal Access";
+        } else {
+            document.getElementById('loginTab').className = "tab";
+            document.getElementById('signupTab').className = "tab active";
+            document.getElementById('userGroup').style.display = "block";
+            document.getElementById('submitBtn').innerText = "Register System Identity";
+        }
+    }
+</script>
+{% endblock %}

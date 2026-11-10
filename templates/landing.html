@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Cortex AI — Predictive Analytics System{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero { text-align: center; max-width: 800px; margin: 60px auto; }
+    .hero-title { font-size: 48px; font-weight: 900; color: #FFF; margin-bottom: 20px; }
+    .hero-title span { background: linear-gradient(90deg, #00F2FE, #F355DA); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero-desc { color: #A0AEC0; font-size: 18px; line-height: 1.6; margin-bottom: 40px; }
+    
+    .features-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 25px; max-width: 1000px; margin: 0 auto 50px auto; }
+    .feature-card { background: #111122; border: 1px solid rgba(79, 70, 229, 0.3); border-radius: 12px; padding: 25px; text-align: center; }
+    .feature-icon { font-size: 36px; margin-bottom: 15px; }
+    .feature-name { color: #00F2FE; font-weight: bold; font-size: 18px; margin-bottom: 10px; }
+    .feature-text { color: #718096; font-size: 13px; }
+    
+    .cta-btn {
+        padding: 15px 40px; font-size: 16px; font-weight: 900; border: none; border-radius: 30px;
+        background: linear-gradient(90deg, #00F2FE, #4FACFE); color: #05050A; cursor: pointer;
+        text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 0 20px rgba(0,242,254,0.4); transition: transform 0.2s;
+    }
+    .cta-btn:hover { transform: scale(1.05); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <h1 class="hero-title">Unlock the Future of Academic Intelligence with <span>Cortex AI</span></h1>
+    <p class="hero-desc">Automate student retention diagnostics using industrial-grade predictive analytics loops. Cortex maps high-dimensional socio-economic and grade attributes to isolate campus dropouts vectors before they happen.</p>
+    <button class="cta-btn" onclick="window.location.href='/auth'">Launch Retention System 🚀</button>
+</div>
+
+<div class="features-grid">
+    <div class="feature-card">
+        <div class="feature-icon">🧠</div>
+        <div class="feature-name">Logistic Regression Engine</div>
+        <div class="feature-text">Evaluates mathematical weight parameters tracking precise boundary thresholds at 91.60% accuracy scores.</div>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <div class="feature-name">Granular Aspect Matrix</div>
+        <div class="feature-text">Isolates critical risk domains from educational profiles and maps financial/academic vectors automatically.</div>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <div class="feature-name">Secure Auth Storage</div>
+        <div class="feature-text">Secures administrative login signatures utilizing cryptographic hashing and SQLite sandboxes.</div>
+    </div>
+</div>
+{% endblock %}

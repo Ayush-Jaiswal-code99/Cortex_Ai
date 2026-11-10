@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Cortex AI{% endblock %}</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body {
+            background: #09090E; color: #E2E8F0; margin: 0; padding: 0;
+            display: flex; flex-direction: column; min-height: 100vh;
+        }
+        .navbar {
+            background: #111122; height: 60px; display: flex; align-items: center;
+            justify-content: space-between; padding: 0 30px; border-bottom: 1px solid rgba(0, 242, 254, 0.2);
+            position: sticky; top: 0; z-index: 1000;
+        }
+        .nav-logo { font-weight: 900; background: linear-gradient(90deg, #00F2FE, #F355DA); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 20px; cursor: pointer; }
+        .nav-links a { color: #A0AEC0; text-decoration: none; margin-left: 20px; font-size: 14px; transition: color 0.3s; }
+        .nav-links a:hover { color: #00F2FE; }
+        
+        .app-container { display: flex; flex: 1; }
+        
+        .sidebar {
+            width: 240px; background: #0D0D1A; border-right: 1px solid rgba(79, 70, 229, 0.2);
+            padding: 25px 15px; display: flex; flex-direction: column; gap: 10px;
+        }
+        .side-item {
+            padding: 12px 15px; border-radius: 8px; color: #A0AEC0; text-decoration: none;
+            font-size: 14px; display: flex; align-items: center; gap: 12px; transition: all 0.3s; cursor: pointer;
+        }
+        .side-item:hover, .side-item.active { background: rgba(0, 242, 254, 0.1); color: #00F2FE; font-weight: bold; }
+        
+        .main-content { flex: 1; padding: 40px; background: radial-gradient(circle at 50% 50%, #0F0F1E 0%, #05050A 100%); }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-logo" onclick="window.location.href='/'">🧠 CORTEX AI</div>
+        <div class="nav-links">
+            {% if session.get('user') %}
+                <span style="color: #F355DA;">📟 Administrator: {{ session['user'] }}</span>
+                <a href="/logout">🚪 Sign Out</a>
+            {% else %}
+                <a href="/auth">🔑 Access Portal</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="app-container">
+        {% if session.get('user') %}
+        <div class="sidebar">
+            <div onclick="window.location.href='/dashboard'" class="side-item active"> prenatal Core Analytics</div>
+            <div onclick="triggerModuleAlert('Datasets Explorer')" class="side-item">📊 Datasets Explorer</div>
+            <div onclick="triggerModuleAlert('Model Hyper-tuning')" class="side-item">🛠️ Model Hyper-tuning</div>
+            <div onclick="triggerModuleAlert('Performance Logs')" class="side-item">📈 Performance Log</div>
+            <hr style="border-color: rgba(255,255,255,0.05); width: 100%;">
+            <div onclick="window.location.href='/logout'" class="side-item" style="color: #EF4444;">🚪 Terminate Session</div>
+        </div>
+        {% endif %}
+        
+        <main class="main-content">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    <script>
+        function triggerModuleAlert(moduleName) {
+            alert(`🔒 Secure Access Notice: The '${moduleName}' sub-module integration parameters are locked under current administrative session privileges.`);
+        }
+    </script>
+</body>
+</html>

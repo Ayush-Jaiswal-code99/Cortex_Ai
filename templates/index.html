@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% block title %}Cortex Console — Core Predictive Workspace{% endblock %}
+
+{% block extra_css %}
+<style>
+    .neon-title { font-size: 32px; font-weight: 900; background: linear-gradient(90deg, #00F2FE, #F355DA); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 30px; }
+    .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+    .glass-panel { background: rgba(20, 20, 35, 0.65); border: 1px solid rgba(79, 70, 229, 0.3); border-radius: 16px; padding: 25px; backdrop-filter: blur(10px); }
+    .section-title { color: #F355DA; font-size: 18px; margin-top: 0; margin-bottom: 20px; border-bottom: 1px solid rgba(243, 85, 218, 0.2); padding-bottom: 5px; }
+    .input-group { margin-bottom: 18px; }
+    label { display: block; color: #00F2FE; font-weight: bold; margin-bottom: 8px; font-size: 13px; }
+    input, select { width: 100%; padding: 12px; background: rgba(10, 10, 20, 0.8); border: 1px solid rgba(0, 242, 254, 0.4); border-radius: 8px; color: #FFF; font-size: 14px; }
+    .btn-glow { width: 100%; padding: 14px; background: linear-gradient(90deg, #00F2FE, #4FACFE); border: none; border-radius: 8px; color: #05050A; font-weight: 900; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 0 15px rgba(0,242,254,0.3); }
+    
+    /* Dynamic State Banners Styles fixed */
+    .verdict { padding: 18px; border-radius: 12px; text-align: center; font-weight: bold; display: none; margin-bottom: 20px; font-size: 16px; }
+    .secure-banner { background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.4) 100%) !important; border: 2px solid #10B981 !important; color: #2ECC71 !important; box-shadow: 0 0 15px rgba(16,185,129,0.4); }
+    .risk-banner { background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.4) 100%) !important; border: 2px solid #EF4444 !important; color: #E74C3C !important; box-shadow: 0 0 15px rgba(239,68,68,0.4); }
+    
+    .progress-container { display: none; margin-bottom: 20px; }
+    .progress-bar { width: 100%; background: #1E1E2F; height: 12px; border-radius: 6px; overflow: hidden; margin-top: 8px; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #F355DA, #00F2FE); width: 0%; transition: width 0.4s ease; }
+    .insights { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 8px; display: none; }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1 class="neon-title">⚙️ Operational Core Analytical Terminal</h1>
+
+<div class="dashboard">
+    <div class="glass-panel">
+        <h2 class="section-title">📥 Data Ingestion Node</h2>
+        <form id="predictionForm" onsubmit="return false;">
+            <div class="input-group"><label>First Semester Evaluation Score (0.0 - 20.0)</label><input type="number" id="g1" step="0.1" value="12.0" required></div>
+            <div class="input-group"><label>Second Semester Evaluation Score (0.0 - 20.0)</label><input type="number" id="g2" step="0.1" value="12.9" required></div>
+            <div class="input-group"><label>Tuition Fees Up to Date?</label><select id="tuition"><option value="Yes">Yes</option><option value="No">No</option></select></div>
+            <div class="input-group"><label>Age at Matriculation</label><input type="number" id="age" value="19" required></div>
+            <button type="button" id="submitBtn" class="btn-glow">EXECUTE MATH ENGINE 🚀</button>
+        </form>
+    </div>
+
+    <div class="glass-panel">
+        <h2 class="section-title">📊 Diagnostics Telemetry Console</h2>
+        <div id="idleState" style="text-align:center; color:#4A4A6A; padding:60px 0; font-size: 40px;">🖥️<p style="font-size:13px; color: #6B7280; margin-top: 10px;">Awaiting parameters vector sequence execution commands...</p></div>
+        
+        <div id="verdictBanner" class="verdict"></div>
+        
+        <div id="progressContainer" class="progress-container">
+            <span id="confidenceText" style="font-size:13px; color:#00F2FE;">Confidence Matrix: 0%</span>
+            <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
+        </div>
+        
+        <div id="insightsBox" class="insights">
+            <div style="font-weight:bold; color:#F355DA; margin-bottom:8px;">🎯 Identified Component Sub-Risks:</div>
+            <div id="insightsList"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('submitBtn').addEventListener('click', async () => {
+        const payload = {
+            g1: document.getElementById('g1').value,
+            g2: document.getElementById('g2').value,
+            tuition: document.getElementById('tuition').value,
+            age: document.getElementById('age').value
+        };
+
+        try {
+            const response = await fetch('/predict', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            
+            const result = await response.json();
+            
+            if(result.status === 'success') {
+                document.getElementById('idleState').style.display = 'none';
+                
+                const banner = document.getElementById('verdictBanner');
+                banner.style.display = 'block';
+                
+                // --- FIXED REALTIME UI RE-RENDER CLASS RESET ENGINE ---
+                if(result.prediction === 1) {
+                    banner.className = "verdict secure-banner";
+                    banner.innerHTML = "STATUS: GRADUATION SECURE<br><small style='font-size:12px; font-weight:normal; color:#FFF;'>Student metrics align with high retention profiles.</small>";
+                } else {
+                    banner.className = "verdict risk-banner";
+                    banner.innerHTML = "ALERT: ATTRITION RISK DETECTED<br><small style='font-size:12px; font-weight:normal; color:#FFF;'>Breached risk vectors threshold. Advisor notification recommended.</small>";
+                }
+                
+                document.getElementById('progressContainer').style.display = 'block';
+                document.getElementById('confidenceText').innerText = `Confidence Vector Alignment: ${result.confidence}%`;
+                document.getElementById('progressFill').style.width = `${result.confidence}%`;
+                
+                const insightsBox = document.getElementById('insightsBox');
+                const list = document.getElementById('insightsList');
+                list.innerHTML = '';
+                let alertsCount = 0;
+                
+                if(result.g2_drop) {
+                    list.innerHTML += "<div style='color:#F59E0B; margin: 5px 0;'>⚠️ <b>ACADEMIC DROP:</b> Low 2nd sem performance is accelerating attrition curves.</div>";
+                    alertsCount++;
+                }
+                if(result.tuition_due) {
+                    list.innerHTML += "<div style='color:#3B82F6; margin: 5px 0;'>💸 <b>FINANCIAL RISK:</b> Outstanding tuition balance creates immediate retention exposure.</div>";
+                    alertsCount++;
+                }
+                
+                if(alertsCount > 0) {
+                    insightsBox.style.display = 'block';
+                } else {
+                    list.innerHTML = "<div style='color:#10B981;'>✨ All structural metrics operating safely within balance margins.</div>";
+                    insightsBox.style.display = 'block';
+                }
+            }
+        } catch (error) {
+            console.error("Inference execution failed:", error);
+        }
+    });
+</script>
+{% endblock %}
+
